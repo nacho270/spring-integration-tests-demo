@@ -1,0 +1,28 @@
+version: '3'
+services:
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+
+  mysql:
+    image: mysql:latest
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+
+  jooq:
+    image: nacho270/spring-int-testing-demo:latest
+    environment:
+      spring.datasource.url: jdbc:mysql://mysql:3306/spring-int-testing-demo
+      spring.data.mongodb.host: mongo
+    ports:
+      - 8080:8080
+    links:
+      - mysql
+      - mongo
