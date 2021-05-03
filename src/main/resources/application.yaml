@@ -19,3 +19,6 @@ spring:
       username: root
       password: root
       database: log
+
+userapi:
+  url: https://jsonplaceholder.typicode.com/
