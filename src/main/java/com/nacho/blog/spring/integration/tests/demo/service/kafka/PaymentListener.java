@@ -20,7 +20,6 @@ public class PaymentListener {
     shipmentService.updatePaymentStatus(paymentInfo.getShipmentId(), paymentInfo.getPaymentStatus());
   }
 
-
   @Data
   public static class ShipmentPaymentInfo {
     private UUID shipmentId;

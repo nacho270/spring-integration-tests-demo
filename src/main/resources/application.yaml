@@ -31,5 +31,8 @@ spring:
 payments:
   topic: payment_outcome
 
+news:
+  topic: shipment_news
+
 userapi:
   url: https://jsonplaceholder.typicode.com/

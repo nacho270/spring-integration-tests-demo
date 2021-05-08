@@ -23,4 +23,6 @@ To send payment notification:
 
 `/usr/bin/kafka-console-producer.sh --topic payment_outcome --broker-list localhost:9092`
 
-`{"shipmentId":"1c890b4f-1b6e-4e55-b823-b101b57c96cb", "paymentStatus":"PAID"}`
+`{"shipmentId":"fe983d38-4384-40f0-baf9-684ef71a2491", "paymentStatus":"PAID"}`
+
+`kafka-console-consumer.sh --topic shipment_news --bootstrap-server localhost:9092`
