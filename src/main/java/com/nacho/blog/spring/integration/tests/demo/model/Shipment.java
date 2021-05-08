@@ -49,6 +49,6 @@ public class Shipment {
   private ShipmentPaymentStatus paymentStatus;
 
   public enum ShipmentPaymentStatus {
-    PENDING, PAID;
+    PENDING, PAID, REJECTED
   }
 }

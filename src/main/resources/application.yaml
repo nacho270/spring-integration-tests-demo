@@ -17,5 +17,19 @@ spring:
       port: 27017
       database: log
 
+  kafka:
+    bootstrap-servers: "localhost:29092"
+    listener:
+      type: SINGLE
+      ack-mode: record
+    consumer:
+      group-id: "intTestDemo"
+      auto-offset-reset: earliest
+      enagle-auto-commit: false
+      isolation-level: READ_COMMITTED
+
+payments:
+  topic: payment_outcome
+
 userapi:
   url: https://jsonplaceholder.typicode.com/

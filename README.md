@@ -10,11 +10,17 @@
 ## Notes
 
 - Not doing unit tests as it's not the idea of this project.
-  
+
 - Demonstrate Spring Integration tests and Cucumber for BDD/Acceptance test
 
 ## Run locally
 
-- `docker run --name spring-int-testing-demo -e MYSQL_ROOT_PASSWORD=root -p 3306:3306 -d mysql:latest`
-  
-- `docker run --name mongo -p 27017:27017 -d mongo:latest`
+- `docker compose up`
+
+To send payment notification:
+
+`docker exec -it spring-integration-tests-demo_kafka_1 bash`
+
+`/usr/bin/kafka-console-producer.sh --topic payment_outcome --broker-list localhost:9092`
+
+`{"shipmentId":"1c890b4f-1b6e-4e55-b823-b101b57c96cb", "paymentStatus":"PAID"}`

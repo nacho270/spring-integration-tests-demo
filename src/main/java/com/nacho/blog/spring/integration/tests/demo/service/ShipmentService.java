@@ -45,6 +45,7 @@ public class ShipmentService {
   public Shipment createShipment(final CreateShipmentRequest createShipmentRequest) {
     try {
       Shipment shipment = shipmentRepository.save(mapShipment(createShipmentRequest));
+      // TODO send to kafka
       logRepository.save(new LogEntry(LogEntry.LogEntryType.CREATE, Shipment.class.getName(),
               shipment.getId().toString(), LocalDateTime.now()));
       return shipment;
@@ -87,8 +88,7 @@ public class ShipmentService {
             .build();
   }
 
-  public void markAsPaid(UUID shipmentId) {
-    // TODO: trigger this from kafka
-    shipmentRepository.markAsPaid(shipmentId);
+  public void updatePaymentStatus(UUID shipmentId, Shipment.ShipmentPaymentStatus paymentStatus) {
+    shipmentRepository.markAs(shipmentId, paymentStatus);
   }
 }

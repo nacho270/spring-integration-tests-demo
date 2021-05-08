@@ -14,7 +14,4 @@ public interface ShipmentRepository extends CrudRepository<Shipment, UUID> {
   @Query("UPDATE Shipment s SET s.paymentStatus = :paymentStatus WHERE s.id = :id")
   void markAs(@Param("id") UUID shipmentId, @Param("paymentStatus") Shipment.ShipmentPaymentStatus paymentStatus);
 
-  default void markAsPaid(UUID id) {
-    markAs(id, Shipment.ShipmentPaymentStatus.PAID);
-  }
 }
