@@ -10,11 +10,9 @@ import com.nacho.blog.spring.integration.tests.demo.repository.ShipmentRepositor
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Lock;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.LockModeType;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -44,7 +42,6 @@ public class ShipmentService {
     return shipmentRepository.findById(id);
   }
 
-  @Lock(LockModeType.OPTIMISTIC)
   public Shipment createShipment(final CreateShipmentRequest createShipmentRequest) {
     try {
       Shipment shipment = shipmentRepository.save(mapShipment(createShipmentRequest));

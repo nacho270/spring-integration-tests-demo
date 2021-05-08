@@ -1,4 +1,4 @@
-package com.nacho.blog.spring.integration.tests.demo.controller;
+package com.nacho.blog.spring.integration.tests.demo.config;
 
 import com.nacho.blog.spring.integration.tests.demo.service.UserApi;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,9 +12,9 @@ public class UserApiConfig {
 
   @Bean
   public UserApi userApi(@Value("${userapi.url}") String userApiUrl){
-    return new Retrofit.Builder() //
-            .baseUrl(userApiUrl) //
-            .addConverterFactory(GsonConverterFactory.create()) //
+    return new Retrofit.Builder()
+            .baseUrl(userApiUrl)
+            .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(UserApi.class);
   }

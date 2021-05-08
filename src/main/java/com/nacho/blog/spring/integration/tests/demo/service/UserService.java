@@ -1,7 +1,6 @@
 package com.nacho.blog.spring.integration.tests.demo.service;
 
 import com.nacho.blog.spring.integration.tests.demo.model.LogEntry;
-import com.nacho.blog.spring.integration.tests.demo.model.Shipment;
 import com.nacho.blog.spring.integration.tests.demo.model.User;
 import com.nacho.blog.spring.integration.tests.demo.repository.LogRepository;
 import com.nacho.blog.spring.integration.tests.demo.repository.UserRepository;
