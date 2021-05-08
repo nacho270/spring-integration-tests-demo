@@ -13,11 +13,8 @@ spring:
       ddl-auto: update
   data:
     mongodb:
-      authentication-database: admin
       host: localhost
       port: 27017
-      username: root
-      password: root
       database: log
 
 userapi:

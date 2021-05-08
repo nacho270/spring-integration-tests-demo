@@ -13,40 +13,40 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * An example of an Assertj custom assertion.
  */
-public class ShipmentCustomAssertion extends AbstractAssert<ShipmentCustomAssertion, Shipment> {
+public class ShipmentAssertion extends AbstractAssert<ShipmentAssertion, Shipment> {
 
-  public ShipmentCustomAssertion(Shipment shipment) {
-    super(shipment, ShipmentCustomAssertion.class);
+  public ShipmentAssertion(Shipment shipment) {
+    super(shipment, ShipmentAssertion.class);
   }
 
-  public static ShipmentCustomAssertion assertThatShipment(Shipment shipment) {
+  public static ShipmentAssertion assertThatShipment(Shipment shipment) {
     assertThat(shipment).isNotNull();
-    return new ShipmentCustomAssertion(shipment);
+    return new ShipmentAssertion(shipment);
   }
 
-  public ShipmentCustomAssertion hasPendingPayment() {
+  public ShipmentAssertion hasPendingPayment() {
     assertThat(actual.getPaymentStatus()).isEqualTo(Shipment.ShipmentPaymentStatus.PENDING);
     return this;
   }
 
-  public ShipmentCustomAssertion isPaid() {
+  public ShipmentAssertion isPaid() {
     assertThat(actual.getPaymentStatus()).isEqualTo(Shipment.ShipmentPaymentStatus.PAID);
     return this;
   }
 
-  public ShipmentCustomAssertion totalIs(BigDecimal total) {
+  public ShipmentAssertion totalIs(BigDecimal total) {
     assertThat(actual.getTotal()).isEqualByComparingTo(total);
     return this;
   }
 
-  public ShipmentCustomAssertion userIs(User user) {
+  public ShipmentAssertion userIs(User user) {
     assertThat(actual.getUser()).isNotNull();
     assertThat(actual.getUser().getEmail()).isEqualTo(user.getEmail());
     assertThat(actual.getUser().getId()).isEqualTo(user.getId());
     return this;
   }
 
-  public ShipmentCustomAssertion itemCountIs(int itemCount) {
+  public ShipmentAssertion itemCountIs(int itemCount) {
     assertThat(actual.getItems()).isNotNull().hasSize(itemCount);
     return this;
   }

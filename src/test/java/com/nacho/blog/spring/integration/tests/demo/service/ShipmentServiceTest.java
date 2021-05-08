@@ -1,11 +1,12 @@
 package com.nacho.blog.spring.integration.tests.demo.service;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
-import com.github.tomakehurst.wiremock.client.MappingBuilder;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.nacho.blog.spring.integration.tests.demo.controller.dto.CreateShipmentRequest;
+import com.nacho.blog.spring.integration.tests.demo.model.LogEntry;
+import com.nacho.blog.spring.integration.tests.demo.model.Product;
+import com.nacho.blog.spring.integration.tests.demo.model.Shipment;
 import com.nacho.blog.spring.integration.tests.demo.model.User;
-import com.nacho.blog.spring.integration.tests.demo.repository.LogRepository;
 import com.nacho.blog.spring.integration.tests.demo.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,7 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -24,16 +25,14 @@ import org.springframework.test.jdbc.JdbcTestUtils;
 import java.math.BigDecimal;
 import java.util.List;
 
-import static com.nacho.blog.spring.integration.tests.demo.service.ShipmentCustomAssertion.assertThatShipment;
+import static com.nacho.blog.spring.integration.tests.demo.service.MongoLogAssertion.assertThatMongo;
+import static com.nacho.blog.spring.integration.tests.demo.service.ShipmentAssertion.assertThatShipment;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ContextConfiguration(initializers = {WireMockInitializer.class})
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
-//@DataMongoTest
 class ShipmentServiceTest {
 
   @Autowired
@@ -45,8 +44,8 @@ class ShipmentServiceTest {
   @Autowired
   private JdbcTemplate jdbcTemplate;
 
-//  @Autowired
-//  private MongoTemplate mongoTemplate;
+  @Autowired
+  private MongoTemplate mongoTemplate;
 
   @Autowired
   private UserRepository userRepository;
@@ -54,14 +53,10 @@ class ShipmentServiceTest {
   @Autowired
   private WireMockServer wireMockServer;
 
-  @MockBean
-  private LogRepository logRepository;
-
   @BeforeEach
   public void init() {
     wireMockServer.resetAll();
   }
-
 
   @Test
   @DisplayName("Can persist a user, a product and create a shipment with them")
@@ -71,7 +66,6 @@ class ShipmentServiceTest {
     var product = productService.createProduct("my product", BigDecimal.TEN);
     var user = userRepository.save(new User(1, "test@user.com"));
     var request = new CreateShipmentRequest(1, List.of(new CreateShipmentRequest.ItemRequest(product.getId(), 1)));
-    when(logRepository.save(any())).thenReturn(null);
 
     // when
     var shipment = shipmentService.createShipment(request);
@@ -97,24 +91,26 @@ class ShipmentServiceTest {
             "f_product_id = '" + product.getId() + "' and f_shipment_id = '" + shipment.getId() + "'"))
             .isEqualTo(1);
 
-//    assertThat(mongoTemplate.find(
-//            new Query()
-//                    .addCriteria(Criteria.where("event").is(LogEntry.LogEntryType.CREATE.toString()))
-//                    .addCriteria(Criteria.where("className").is(Product.class.getName()))
-//                    .addCriteria(Criteria.where("identifier").is(product.getId().toString())), LogEntry.class, "log")
-//    ).asList().hasSize(1);
-//
-//    assertThat(mongoTemplate.find(
-//            new Query()
-//                    .addCriteria(Criteria.where("event").is(LogEntry.LogEntryType.CREATE.toString()))
-//                    .addCriteria(Criteria.where("className").is(Shipment.class.getName()))
-//                    .addCriteria(Criteria.where("identifier").is(shipment.getId().toString())), LogEntry.class, "log")
-//    ).asList().hasSize(1);
+    assertThatMongo(mongoTemplate)
+            .query()
+            .forEvent(LogEntry.LogEntryType.CREATE)
+            .forClass(Product.class)
+            .forIdentifier(product.getId())
+            .find()
+            .hasSize(1);
+
+    assertThatMongo(mongoTemplate)
+            .query()
+            .forEvent(LogEntry.LogEntryType.CREATE)
+            .forClass(Shipment.class)
+            .forIdentifier(shipment.getId())
+            .find()
+            .hasSize(1);
 
   }
 
   @Test
-  @DisplayName("Can a product and create a shipment with it and a user from the api")
+  @DisplayName("Can persist a product and create a shipment with it and a user from the api")
   void testCreateProductAndShipment() {
 
     // given
@@ -130,7 +126,6 @@ class ShipmentServiceTest {
                                     }
                                     """)));
     var request = new CreateShipmentRequest(1, List.of(new CreateShipmentRequest.ItemRequest(product.getId(), 1)));
-    when(logRepository.save(any())).thenReturn(null);
 
     // when
     var shipment = shipmentService.createShipment(request);
@@ -156,20 +151,21 @@ class ShipmentServiceTest {
             "f_product_id = '" + product.getId() + "' and f_shipment_id = '" + shipment.getId() + "'"))
             .isEqualTo(1);
 
-//    assertThat(mongoTemplate.find(
-//            new Query()
-//                    .addCriteria(Criteria.where("event").is(LogEntry.LogEntryType.CREATE.toString()))
-//                    .addCriteria(Criteria.where("className").is(Product.class.getName()))
-//                    .addCriteria(Criteria.where("identifier").is(product.getId().toString())), LogEntry.class, "log")
-//    ).asList().hasSize(1);
-//
-//    assertThat(mongoTemplate.find(
-//            new Query()
-//                    .addCriteria(Criteria.where("event").is(LogEntry.LogEntryType.CREATE.toString()))
-//                    .addCriteria(Criteria.where("className").is(Shipment.class.getName()))
-//                    .addCriteria(Criteria.where("identifier").is(shipment.getId().toString())), LogEntry.class, "log")
-//    ).asList().hasSize(1);
+    assertThatMongo(mongoTemplate)
+            .query()
+            .forEvent(LogEntry.LogEntryType.CREATE)
+            .forClass(Product.class)
+            .forIdentifier(product.getId())
+            .find()
+            .hasSize(1);
 
+    assertThatMongo(mongoTemplate)
+            .query()
+            .forEvent(LogEntry.LogEntryType.CREATE)
+            .forClass(Shipment.class)
+            .forIdentifier(shipment.getId())
+            .find()
+            .hasSize(1);
   }
 
 }

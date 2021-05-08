@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
 
 @Data
-@Document(collation = "LogEntry")
+@Document(collection = "LogEntry")
 public class LogEntry {
 
   @Id
@@ -26,6 +26,6 @@ public class LogEntry {
   }
 
   public enum LogEntryType {
-    CREATE, DELETE;
+    CREATE, DELETE
   }
 }
