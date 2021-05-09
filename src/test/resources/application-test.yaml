@@ -3,3 +3,6 @@ spring:
     url: jdbc:h2:mem:test;MODE=MySQL;DATABASE_TO_LOWER=TRUE
     username: root
     password:
+
+  kafka:
+    bootstrap-servers: ${spring.embedded.kafka.brokers}
