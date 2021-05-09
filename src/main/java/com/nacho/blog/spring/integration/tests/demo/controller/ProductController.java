@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,9 +30,12 @@ public class ProductController {
     return ResponseEntity.ok(productService.getProducts());
   }
 
-  @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+  @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Product> create(@RequestBody final CreateProductRequest createProductRequest) {
-    return ResponseEntity.ok(productService.createProduct(createProductRequest.name(), createProductRequest.price()));
+    URI currentURI = ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri();
+    return ResponseEntity
+                   .created(currentURI)
+                   .body(productService.createProduct(createProductRequest.name(), createProductRequest.price()));
   }
 
   @GetMapping(path = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})

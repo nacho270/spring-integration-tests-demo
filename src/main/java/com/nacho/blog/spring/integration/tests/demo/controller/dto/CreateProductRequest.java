@@ -1,7 +1,9 @@
 package com.nacho.blog.spring.integration.tests.demo.controller.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.math.BigDecimal;
 
-public record CreateProductRequest(String name, BigDecimal price) {
+public record CreateProductRequest(@JsonProperty("name") String name, @JsonProperty("price") BigDecimal price) {
 
 }
