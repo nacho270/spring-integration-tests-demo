@@ -7,6 +7,9 @@ import com.nacho.blog.spring.integration.tests.demo.model.Shipment;
 import com.nacho.blog.spring.integration.tests.demo.repository.LogRepository;
 import com.nacho.blog.spring.integration.tests.demo.repository.ProductRepository;
 import com.nacho.blog.spring.integration.tests.demo.repository.ShipmentRepository;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -90,7 +93,7 @@ public class ShipmentService {
   }
 
   private Item mapItem(final CreateShipmentRequest.ItemRequest ir) {
-    return Item.builder() //
+    return Item.builder()
                    .id(UUID.randomUUID())
                    .product(productRepository
                                     .findById(ir.product())
@@ -104,8 +107,10 @@ public class ShipmentService {
     log.info("Shipment {} payment status is {}", shipmentId, paymentStatus);
   }
 
-  @lombok.Value
-  public class ShipmentCreated {
+  @Data
+  @AllArgsConstructor
+  @NoArgsConstructor
+  public static class ShipmentCreated {
     UUID shipmentId;
   }
 }
