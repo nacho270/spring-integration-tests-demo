@@ -82,7 +82,7 @@ public class CucumberConfig {
 
   @TestConfiguration
   @RequiredArgsConstructor
-  public static class RestAssuredConfig extends ServerPortInfoApplicationContextInitializer implements InitializingBean {
+  static class RestAssuredConfig extends ServerPortInfoApplicationContextInitializer implements InitializingBean {
 
     private final ObjectMapper objectMapper;
     private final Environment env;

@@ -16,9 +16,9 @@ import static java.util.concurrent.TimeUnit.MINUTES;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
 
-final class KafkaConsumerUtils {
+public final class KafkaConsumerUtils {
 
-  static List<ShipmentService.ShipmentCreated> getAtLeastShipmentNewsForPredicate(int msgCount,
+  public static List<ShipmentService.ShipmentCreated> getAtLeastShipmentNewsForPredicate(int msgCount,
                                                                                   Predicate<ShipmentService.ShipmentCreated> predicate,
                                                                                   Consumer<String, ShipmentService.ShipmentCreated> consumer) {
     List<ShipmentService.ShipmentCreated> messages = Lists.newArrayList();

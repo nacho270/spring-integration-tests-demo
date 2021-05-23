@@ -33,6 +33,7 @@ import org.springframework.kafka.support.serializer.JsonSerializer;
 import org.springframework.kafka.test.EmbeddedKafkaBroker;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -48,7 +49,7 @@ import static com.nacho.blog.spring.integration.tests.demo.service.ShipmentAsser
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.MINUTES;
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 
 @ActiveProfiles("test")
@@ -56,6 +57,7 @@ import static org.awaitility.Awaitility.await;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ContextConfiguration(initializers = {WireMockInitializer.class})
 @EmbeddedKafka(topics = {"shipment_news", "payment_outcome"})
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS) // forces waiting for embedded mongo to stop.
 class ShipmentServiceTest {
 
   @Autowired
@@ -182,7 +184,7 @@ class ShipmentServiceTest {
     List<ShipmentService.ShipmentCreated> expectedShipmentNews =
             getAtLeastShipmentNewsForPredicate(
                     1,
-                    (sc) -> sc.getShipmentId().equals(shipment.getId()),
+                    (shipmentCreatedMsg) -> shipmentCreatedMsg.getShipmentId().equals(shipment.getId()),
                     shipmentNewsConsumer
             );
 
