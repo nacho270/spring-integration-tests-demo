@@ -21,8 +21,8 @@ To send payment notification:
 
 `docker exec -it spring-integration-tests-demo_kafka_1 bash`
 
-`/usr/bin/kafka-console-producer.sh --topic payment_outcome --broker-list localhost:9092`
+`kafka-console-producer.sh --topic payment_outcome --broker-list localhost:9092`
 
-`{"shipmentId":"fe983d38-4384-40f0-baf9-684ef71a2491", "paymentStatus":"PAID"}`
+`{"shipmentId":"0d140d39-70cb-4332-b317-3f23363b05ee", "paymentStatus":"PAID"}`
 
 `kafka-console-consumer.sh --topic shipment_news --bootstrap-server localhost:9092`
