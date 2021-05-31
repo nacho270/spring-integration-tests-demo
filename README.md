@@ -15,7 +15,11 @@ Requirements:
 - Store/Retrieve from MySql: Save products and shipments into MySql
 - Store/Retrieve from MongoDB: Save a log entry when something happens.
 - Send to kafka: Send news when a new shipment is created
-- Receive from kafka: Listen for messages from a `payments system` that will notify if the shipment was paid.
+- Receive from kafka: Listen for messages from a `payments service` that will notify if the shipment was paid.
+
+## Components
+
+![Components](components.png)
 
 
 ## Notes
