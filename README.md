@@ -35,7 +35,7 @@ Run `cucumber.CucumberTestsRunner`.
 
 - It will use the config from [`cucumber.config.CucumberConfig`](https://github.com/nacho270/spring-integration-tests-demo/blob/master/src/test/java/cucumber/config/CucumberConfig.java).
 - It will start the application with H2, embedded mongo and embedded kafka.
-- It will run tests from [`src/test/resources/cucumber/shipment.feature`](https://github.com/nacho270/spring-integration-tests-demo/blob/master/src/test/resources/cucumber/shipment.feature)
+- It will run tests from [`src/test/resources/cucumber/shipment.feature`](https://github.com/nacho270/spring-integration-tests-demo/blob/master/src/test/resources/cucumber/shipment.feature).
 
 ## Run application locally
 

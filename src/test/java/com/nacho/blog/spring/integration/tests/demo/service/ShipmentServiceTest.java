@@ -117,7 +117,7 @@ class ShipmentServiceTest {
 
   @Test
   @DisplayName("Can pay a shipment")
-  public void testPayShipment() {
+  void testPayShipment() {
     // given
     userRepository.save(new User(1, "test@user.com"));
     var product = productService.createProduct("my product", BigDecimal.TEN);
