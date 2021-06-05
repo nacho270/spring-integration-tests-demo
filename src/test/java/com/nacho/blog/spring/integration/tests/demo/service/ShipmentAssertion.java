@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class ShipmentAssertion extends AbstractAssert<ShipmentAssertion, Shipment> {
 
-  public ShipmentAssertion(Shipment shipment) {
+  private ShipmentAssertion(Shipment shipment) {
     super(shipment, ShipmentAssertion.class);
   }
 

@@ -9,6 +9,7 @@ import com.nacho.blog.spring.integration.tests.demo.model.Product;
 import com.nacho.blog.spring.integration.tests.demo.model.Shipment;
 import com.nacho.blog.spring.integration.tests.demo.service.ShipmentService;
 import com.nacho.blog.spring.integration.tests.demo.service.kafka.PaymentListener;
+import io.cucumber.java.ParameterType;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -83,8 +84,13 @@ public class TestSteps implements En {
                                       .extract().response().as(Product.class);
   }
 
-  @Then("the shipment payment status is {string}")
-  public void assertShipmentPaymentStatus(String paymentStatus) {
+  @ParameterType("PENDING|PAID|REJECTED")
+  public Shipment.ShipmentPaymentStatus paymentStatus(String paymentStatus) {
+    return Shipment.ShipmentPaymentStatus.valueOf(paymentStatus);
+  }
+
+  @Then("the shipment payment status is {paymentStatus}")
+  public void assertShipmentPaymentStatus(Shipment.ShipmentPaymentStatus paymentStatus) {
     await()
             .pollDelay(2, SECONDS)
             .atMost(1, MINUTES)
@@ -99,7 +105,7 @@ public class TestSteps implements En {
                                                  .extract().response().as(Shipment.class);
 
               assertThat(testContextData.shipment.getPaymentStatus())
-                      .isEqualTo(Shipment.ShipmentPaymentStatus.valueOf(paymentStatus));
+                      .isEqualTo(paymentStatus);
             });
   }
 
@@ -135,7 +141,7 @@ public class TestSteps implements En {
   }
 
   @Then("a payment outcome of {string} is sent")
-  public void sendPaymentOutcome(String paymentOutcome) {
+  public void sendPaymentOutcome(String paymentOutcome) { // done differently to demonstrate the contrast with parameter type
     shipmentPaymentKafkaTemplate.send("payment_outcome",
             new PaymentListener.ShipmentPaymentInfo(testContextData.shipment.getId(),
                     Shipment.ShipmentPaymentStatus.valueOf(paymentOutcome)));

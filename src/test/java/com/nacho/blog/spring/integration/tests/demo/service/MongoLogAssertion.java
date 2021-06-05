@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class MongoLogAssertion extends AbstractAssert<MongoLogAssertion, MongoTemplate> {
 
-  public MongoLogAssertion(MongoTemplate mongoTemplate) {
+  private MongoLogAssertion(MongoTemplate mongoTemplate) {
     super(mongoTemplate, MongoLogAssertion.class);
   }
 
