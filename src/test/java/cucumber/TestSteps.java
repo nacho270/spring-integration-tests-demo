@@ -20,6 +20,7 @@ import org.apache.kafka.clients.consumer.Consumer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.kafka.core.KafkaTemplate;
 
@@ -76,7 +77,7 @@ public class TestSteps implements En {
                                                  .body(createShipmentRequest)
                                                  .post("/shipment")
                                                  .then()
-                                                 .statusCode(201)
+                                                 .statusCode(HttpStatus.CREATED.value())
                                                  .extract().response().as(Shipment.class);
             });
   }
@@ -89,7 +90,7 @@ public class TestSteps implements En {
                                       .body(new CreateProductRequest(name, BigDecimal.valueOf(price)))
                                       .post("/product")
                                       .then()
-                                      .statusCode(201)
+                                      .statusCode(HttpStatus.CREATED.value())
                                       .extract().response().as(Product.class);
   }
 
@@ -110,7 +111,7 @@ public class TestSteps implements En {
                                                  .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                                                  .get("/shipment/" + testContextData.shipment.getId())
                                                  .then()
-                                                 .statusCode(200)
+                                                 .statusCode(HttpStatus.OK.value())
                                                  .extract().response().as(Shipment.class);
 
               assertThat(testContextData.shipment.getPaymentStatus())
@@ -168,7 +169,7 @@ public class TestSteps implements En {
     wireMockServer.stubFor(
             WireMock.get("/users/" + userId)
                     .willReturn(WireMock.aResponse()
-                                        .withStatus(200)
+                                        .withStatus(HttpStatus.OK.value())
                                         .withBody(String.format("""
                                                 {
                                                   "id": %s,
