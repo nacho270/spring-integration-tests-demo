@@ -44,12 +44,11 @@ import java.util.Map;
 @EmbeddedKafka(topics = {"shipment_news", "payment_outcome"})
 @ContextConfiguration(initializers = {WireMockInitializer.class})
 @SpringBootTest(
-        webEnvironment = WebEnvironment.RANDOM_PORT,
-        classes = {
-                Application.class, TestContextData.class,
-                CucumberConfig.KafkaTestConfiguration.class,
-                CucumberConfig.RestAssuredConfig.class
-        }
+    webEnvironment = WebEnvironment.RANDOM_PORT,
+    classes = {
+        Application.class, TestContextData.class, ShipmentRepositoryConfiguration.class,
+        CucumberConfig.KafkaTestConfiguration.class, CucumberConfig.RestAssuredConfig.class
+    }
 )
 public class CucumberConfig {
 
@@ -62,11 +61,11 @@ public class CucumberConfig {
       consumerProps.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
       consumerProps.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
       Consumer<String, ShipmentService.ShipmentCreated> consumer =
-              new DefaultKafkaConsumerFactory<>(
-                      consumerProps,
-                      new StringDeserializer(),
-                      new JsonDeserializer<>(ShipmentService.ShipmentCreated.class, false)
-              ).createConsumer();
+          new DefaultKafkaConsumerFactory<>(
+              consumerProps,
+              new StringDeserializer(),
+              new JsonDeserializer<>(ShipmentService.ShipmentCreated.class, false)
+          ).createConsumer();
       embeddedKafka.consumeFromEmbeddedTopics(consumer, "shipment_news");
       return consumer;
     }
@@ -74,9 +73,9 @@ public class CucumberConfig {
     @Bean
     public KafkaTemplate<String, PaymentListener.ShipmentPaymentInfo> shipmentPaymentKafkaTemplate(KafkaProperties kafkaProperties) {
       return new KafkaTemplate<>(new DefaultKafkaProducerFactory<>(
-              kafkaProperties.buildProducerProperties(),
-              new StringSerializer(),
-              new JsonSerializer<>()));
+          kafkaProperties.buildProducerProperties(),
+          new StringSerializer(),
+          new JsonSerializer<>()));
     }
   }
 
@@ -90,10 +89,10 @@ public class CucumberConfig {
     @Override
     public void afterPropertiesSet() {
       var objectMapperConfig = new ObjectMapperConfig()
-                                       .jackson2ObjectMapperFactory((type, s) -> objectMapper);
+          .jackson2ObjectMapperFactory((type, s) -> objectMapper);
       RestAssured.config = io.restassured.config.RestAssuredConfig
-                                   .config()
-                                   .objectMapperConfig(objectMapperConfig);
+          .config()
+          .objectMapperConfig(objectMapperConfig);
     }
 
     @Override

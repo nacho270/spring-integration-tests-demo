@@ -20,3 +20,10 @@ Feature: Shipment lifecycle
       | PAYMENT_OUTCOME |
       | PAID            |
       | REJECTED        |
+
+  Scenario: Should retry payment outcome upon failure
+    Given saving the shipment payment status fails once but works the second time
+    When a shipment is created for user 1 with 2 items of the last product
+    Then a shipment created news is sent
+    Then a payment outcome of 'PAID' is sent
+    And the shipment payment status is PAID

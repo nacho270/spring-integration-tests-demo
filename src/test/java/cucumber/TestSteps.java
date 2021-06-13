@@ -7,6 +7,7 @@ import com.nacho.blog.spring.integration.tests.demo.controller.dto.CreateShipmen
 import com.nacho.blog.spring.integration.tests.demo.model.LogEntry;
 import com.nacho.blog.spring.integration.tests.demo.model.Product;
 import com.nacho.blog.spring.integration.tests.demo.model.Shipment;
+import com.nacho.blog.spring.integration.tests.demo.repository.ShipmentRepository;
 import com.nacho.blog.spring.integration.tests.demo.service.ShipmentService;
 import com.nacho.blog.spring.integration.tests.demo.service.kafka.PaymentListener;
 import io.cucumber.java.ParameterType;
@@ -24,6 +25,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 
 import static com.nacho.blog.spring.integration.tests.demo.service.KafkaConsumerUtils.getAtLeastShipmentNewsForPredicate;
 import static com.nacho.blog.spring.integration.tests.demo.service.MongoLogAssertion.assertThatMongo;
@@ -32,6 +34,9 @@ import static java.util.concurrent.TimeUnit.MINUTES;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.reset;
 
 public class TestSteps implements En {
 
@@ -45,6 +50,9 @@ public class TestSteps implements En {
   private MongoTemplate mongoTemplate;
 
   @Autowired
+  private ShipmentRepository shipmentTestRepository;
+
+  @Autowired
   private Consumer<String, ShipmentService.ShipmentCreated> shipmentNewsConsumer;
 
   @Autowired
@@ -52,6 +60,7 @@ public class TestSteps implements En {
 
   public TestSteps() {
     Before(() -> wireMockServer.resetAll());
+    After(() -> reset(shipmentTestRepository));
 
     // another option for defining test steps
     When("a shipment is created for user {int} with {int} items of the last product",
@@ -145,6 +154,14 @@ public class TestSteps implements En {
     shipmentPaymentKafkaTemplate.send("payment_outcome",
             new PaymentListener.ShipmentPaymentInfo(testContextData.shipment.getId(),
                     Shipment.ShipmentPaymentStatus.valueOf(paymentOutcome)));
+  }
+
+  @Given("saving the shipment payment status fails once but works the second time")
+  public void simulateOneFailureOnMarkingShipment() {
+    doThrow(new RuntimeException("Simulated failure")) // first throw exception. Kafka will retry.
+            .doCallRealMethod()                        // second time, call real method and it should succeed.
+            .when(shipmentTestRepository)
+            .markAs(any(UUID.class), any(Shipment.ShipmentPaymentStatus.class));
   }
 
   private void stubApiCallForUser(Integer userId) {
